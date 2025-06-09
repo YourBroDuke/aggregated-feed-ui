@@ -38,14 +38,14 @@ pnpm install --reporter=default
 ## 本地开发
 
 ```bash
-pnpm dev --reporter=default
+pnpm dev
 ```
 首次运行会自动安装依赖并启动开发服务器，访问 [http://localhost:5173](http://localhost:5173) 查看效果。
 
 ## 代码检查
 
 ```bash
-pnpm lint --reporter=default
+pnpm lint
 ```
 
 ## 生产构建
