@@ -5,8 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 
 interface HeaderProps {
-  searchQuery: string;
-  onSearchChange: (query: string) => void;
   onRefresh: () => void;
   onOpenAddUser: () => void;
   onOpenFilters: () => void;
@@ -17,8 +15,6 @@ interface HeaderProps {
 }
 
 export function Header({
-  searchQuery,
-  onSearchChange,
   onRefresh,
   onOpenAddUser,
   onOpenFilters,
@@ -53,20 +49,6 @@ export function Header({
               </Badge>
               <span>•</span>
               <span>最后更新: {formatLastRefresh(lastRefresh)}</span>
-            </div>
-          </div>
-
-          {/* 中间：搜索框 */}
-          <div className="flex-1 max-w-lg mx-8">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <Input
-                type="text"
-                placeholder="搜索内容、作者或标签..."
-                value={searchQuery}
-                onChange={(e) => onSearchChange(e.target.value)}
-                className="pl-10 w-full"
-              />
             </div>
           </div>
 

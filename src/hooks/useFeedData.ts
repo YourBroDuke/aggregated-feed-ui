@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Platform, FeedItem, FollowedUser, FilterOptions, SearchOptions } from '@/types';
+import { Platform, FeedItem, FollowedUser, FilterOptions } from '@/types';
 import { fetchPlatforms, fetchFeedData, fetchFollowedUsers } from '@/lib/api';
 
 export function useFeedData() {
@@ -13,16 +13,7 @@ export function useFeedData() {
   // 筛选和搜索状态
   const [filters, setFilters] = useState<FilterOptions>({
     platforms: [],
-    contentTypes: [],
     timeRange: 'all',
-    sortBy: 'newest'
-  });
-
-  const [searchOptions, setSearchOptions] = useState<SearchOptions>({
-    query: '',
-    inContent: true,
-    inAuthor: true,
-    inTags: true
   });
 
   // 初始化数据加载
@@ -66,11 +57,6 @@ export function useFeedData() {
       items = items.filter(item => filters.platforms.includes(item.platform));
     }
 
-    // 内容类型筛选
-    if (filters.contentTypes.length > 0) {
-      items = items.filter(item => filters.contentTypes.includes(item.type));
-    }
-
     // 时间范围筛选
     if (filters.timeRange !== 'all') {
       const now = new Date();
@@ -88,46 +74,14 @@ export function useFeedData() {
           break;
       }
       
-      items = items.filter(item => new Date(item.timestamp) >= timeThreshold);
-    }
-
-    // 搜索筛选
-    if (searchOptions.query.trim()) {
-      const query = searchOptions.query.toLowerCase();
-      items = items.filter(item => {
-        const matchInContent = searchOptions.inContent && 
-          (item.content.toLowerCase().includes(query) || 
-           item.summary.toLowerCase().includes(query));
-        
-        const matchInAuthor = searchOptions.inAuthor && 
-          item.author.name.toLowerCase().includes(query);
-        
-        const matchInTags = searchOptions.inTags && 
-          item.tags.some(tag => tag.toLowerCase().includes(query));
-        
-        return matchInContent || matchInAuthor || matchInTags;
-      });
+      items = items.filter(item => new Date(item.postedAt) >= timeThreshold);
     }
 
     // 排序
-    switch (filters.sortBy) {
-      case 'newest':
-        items.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-        break;
-      case 'popular':
-        items.sort((a, b) => b.stats.likes - a.stats.likes);
-        break;
-      case 'engagement':
-        items.sort((a, b) => {
-          const engagementA = a.stats.likes + a.stats.comments + a.stats.shares;
-          const engagementB = b.stats.likes + b.stats.comments + b.stats.shares;
-          return engagementB - engagementA;
-        });
-        break;
-    }
+    items.sort((a, b) => new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime());
 
     return items;
-  }, [feedItems, filters, searchOptions]);
+  }, [feedItems, filters]);
 
   // 获取平台信息的辅助函数
   const getPlatformInfo = (platformId: string): Platform | undefined => {
@@ -149,24 +103,11 @@ export function useFeedData() {
     setFilters(prev => ({ ...prev, ...newFilters }));
   };
 
-  // 更新搜索选项
-  const updateSearchOptions = (newSearchOptions: Partial<SearchOptions>) => {
-    setSearchOptions(prev => ({ ...prev, ...newSearchOptions }));
-  };
-
   // 清除所有筛选
   const clearFilters = () => {
     setFilters({
       platforms: [],
-      contentTypes: [],
       timeRange: 'all',
-      sortBy: 'newest'
-    });
-    setSearchOptions({
-      query: '',
-      inContent: true,
-      inAuthor: true,
-      inTags: true
     });
   };
 
@@ -181,7 +122,6 @@ export function useFeedData() {
     
     // 筛选和搜索状态
     filters,
-    searchOptions,
     
     // 操作函数
     refreshData,
@@ -189,7 +129,6 @@ export function useFeedData() {
     addFollowedUser,
     removeFollowedUser,
     updateFilters,
-    updateSearchOptions,
     clearFilters,
     
     // 统计信息

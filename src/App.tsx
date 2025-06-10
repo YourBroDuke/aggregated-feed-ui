@@ -19,21 +19,14 @@ function App() {
     error,
     lastRefresh,
     filters,
-    searchOptions,
     refreshData,
-    getPlatformInfo,
     addFollowedUser,
     removeFollowedUser,
     updateFilters,
-    updateSearchOptions,
     clearFilters,
     totalItems,
     filteredItemsCount
   } = useFeedData();
-
-  const handleSearchChange = (query: string) => {
-    updateSearchOptions({ query });
-  };
 
   const handleAddUser = (user: any) => {
     addFollowedUser(user);
@@ -50,8 +43,6 @@ function App() {
       
       {/* 头部导航 */}
       <Header
-        searchQuery={searchOptions.query}
-        onSearchChange={handleSearchChange}
         onRefresh={refreshData}
         onOpenAddUser={() => setIsAddUserModalOpen(true)}
         onOpenFilters={() => setIsFilterPanelOpen(true)}

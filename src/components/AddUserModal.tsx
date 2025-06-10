@@ -94,7 +94,7 @@ export function AddUserModal({
 
   const groupedUsers = platforms.map(platform => ({
     platform,
-    users: followedUsers.filter(user => user.platform === platform.id)
+    users: followedUsers.filter(user => user.platform === platform.type)
   })).filter(group => group.users.length > 0);
 
   return (
@@ -223,11 +223,6 @@ export function AddUserModal({
                                     <h5 className="font-medium text-gray-900 truncate">
                                       {user.name}
                                     </h5>
-                                    {user.isActive && (
-                                      <Badge variant="secondary" className="text-xs">
-                                        活跃
-                                      </Badge>
-                                    )}
                                   </div>
                                   <p className="text-sm text-gray-500 truncate">
                                     @{user.username}

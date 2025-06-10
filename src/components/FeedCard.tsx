@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { FeedItem, Platform } from '@/types';
-import { formatTimeAgo, formatNumber } from '@/lib/api';
+import { formatTimeAgo } from '@/lib/api';
 
 interface FeedCardProps {
   item: FeedItem;
@@ -13,35 +13,6 @@ interface FeedCardProps {
 }
 
 export function FeedCard({ item, platform }: FeedCardProps) {
-  const getContentTypeIcon = (type: string) => {
-    switch (type) {
-      case 'video':
-        return <Video className="w-4 h-4" />;
-      case 'article':
-        return <BookOpen className="w-4 h-4" />;
-      case 'tweet':
-        return <Twitter className="w-4 h-4" />;
-      case 'lifestyle':
-        return <Camera className="w-4 h-4" />;
-      default:
-        return <BookOpen className="w-4 h-4" />;
-    }
-  };
-
-  const getContentTypeText = (type: string) => {
-    switch (type) {
-      case 'video':
-        return '视频';
-      case 'article':
-        return '文章';
-      case 'tweet':
-        return '推文';
-      case 'lifestyle':
-        return '生活';
-      default:
-        return '内容';
-    }
-  };
 
   const handleOpenOriginal = () => {
     window.open(item.originalUrl, '_blank', 'noopener,noreferrer');
@@ -89,50 +60,28 @@ export function FeedCard({ item, platform }: FeedCardProps) {
             {/* 时间和类型 */}
             <div className="flex-shrink-0 text-right">
               <div className="text-sm text-gray-500 mb-1">
-                {formatTimeAgo(item.timestamp)}
+                {formatTimeAgo(item.postedAt)}
               </div>
-              <Badge variant="secondary" className="text-xs">
-                <span className="mr-1">{getContentTypeIcon(item.type)}</span>
-                {getContentTypeText(item.type)}
-              </Badge>
             </div>
           </div>
+        </div>
+
+        {/* 内容标题 */}
+        <div className="mb-2">
+          <p className="text-gray-800 leading-relaxed line-clamp-2 text-lg font-medium">
+            {item.title}
+          </p>
         </div>
 
         {/* 内容摘要 */}
         <div className="mb-4">
-          <p className="text-gray-800 leading-relaxed line-clamp-3">
-            {item.summary}
+          <p className="text-gray-600 leading-relaxed line-clamp-3 text-base">
+            {item.content}
           </p>
-        </div>
-
-        {/* 标签 */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {item.tags.map((tag, index) => (
-            <Badge key={index} variant="outline" className="text-xs">
-              #{tag}
-            </Badge>
-          ))}
         </div>
 
         {/* 底部操作栏 */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-          {/* 左侧：统计信息 */}
-          <div className="flex items-center space-x-4 text-sm text-gray-500">
-            <div className="flex items-center space-x-1">
-              <Heart className="w-4 h-4" />
-              <span>{formatNumber(item.stats.likes)}</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <MessageCircle className="w-4 h-4" />
-              <span>{formatNumber(item.stats.comments)}</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <Share2 className="w-4 h-4" />
-              <span>{formatNumber(item.stats.shares)}</span>
-            </div>
-          </div>
-
           {/* 右侧：查看原文按钮 */}
           <Button 
             variant="outline" 

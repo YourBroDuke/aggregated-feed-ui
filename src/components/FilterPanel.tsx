@@ -1,4 +1,3 @@
-import React from 'react';
 import { X, RotateCcw } from 'lucide-react';
 import {
   Sheet,
@@ -6,7 +5,6 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -59,18 +57,9 @@ export function FilterPanel({
     onFiltersChange({ platforms: newPlatforms });
   };
 
-  const handleContentTypeChange = (typeId: string, checked: boolean) => {
-    const newTypes = checked
-      ? [...filters.contentTypes, typeId]
-      : filters.contentTypes.filter(id => id !== typeId);
-    onFiltersChange({ contentTypes: newTypes });
-  };
-
   const isFilterActive = () => {
     return filters.platforms.length > 0 ||
-           filters.contentTypes.length > 0 ||
-           filters.timeRange !== 'all' ||
-           filters.sortBy !== 'newest';
+           filters.timeRange !== 'all';
   };
 
   return (
@@ -135,35 +124,6 @@ export function FilterPanel({
 
           <Separator />
 
-          {/* 内容类型筛选 */}
-          <div>
-            <h3 className="font-medium text-gray-900 mb-3">内容类型</h3>
-            <div className="space-y-3">
-              {contentTypes.map((type) => (
-                <div key={type.id} className="flex items-center space-x-3">
-                  <Checkbox
-                    id={`type-${type.id}`}
-                    checked={filters.contentTypes.includes(type.id)}
-                    onCheckedChange={(checked) => 
-                      handleContentTypeChange(type.id, !!checked)
-                    }
-                  />
-                  <div className="flex items-center space-x-2">
-                    <span className="text-lg">{type.icon}</span>
-                    <Label 
-                      htmlFor={`type-${type.id}`}
-                      className="text-sm font-medium cursor-pointer"
-                    >
-                      {type.label}
-                    </Label>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <Separator />
-
           {/* 时间范围 */}
           <div>
             <h3 className="font-medium text-gray-900 mb-3">时间范围</h3>
@@ -187,31 +147,8 @@ export function FilterPanel({
             </RadioGroup>
           </div>
 
-          <Separator />
-
-          {/* 排序方式 */}
-          <div>
-            <h3 className="font-medium text-gray-900 mb-3">排序方式</h3>
-            <RadioGroup
-              value={filters.sortBy}
-              onValueChange={(value) => 
-                onFiltersChange({ sortBy: value as FilterOptions['sortBy'] })
-              }
-            >
-              {sortOptions.map((option) => (
-                <div key={option.id} className="flex items-center space-x-2">
-                  <RadioGroupItem value={option.id} id={`sort-${option.id}`} />
-                  <Label 
-                    htmlFor={`sort-${option.id}`}
-                    className="text-sm font-medium cursor-pointer"
-                  >
-                    {option.label}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
         </div>
+
 
         {/* 底部操作按钮 */}
         <div className="mt-6 pt-6 border-t border-gray-200">

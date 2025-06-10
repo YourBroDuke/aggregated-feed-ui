@@ -1,9 +1,17 @@
 import { Platform, FeedItem, FollowedUser } from '@/types';
 
+const API_BASE_URL = 'http://localhost:3000/api';
+
+// 默认值常量
+const DEFAULT_NAME = "anonymous-fish";
+const DEFAULT_USERNAME = "anonymous-fish";
+const DEFAULT_AVATAR = "https://picx.zhimg.com/v2-abed1a8c04700ba7d72b45195223e0ff_xl.jpg?source=32738c0c&needBackground=1";
+const DEFAULT_DESCRIPTION = "being caught";
+
 // 获取平台配置数据
 export async function fetchPlatforms(): Promise<Platform[]> {
   try {
-    const response = await fetch('/data/platforms.json');
+    const response = await fetch(`${API_BASE_URL}/platforms`);
     if (!response.ok) {
       throw new Error('获取平台数据失败');
     }
@@ -15,9 +23,20 @@ export async function fetchPlatforms(): Promise<Platform[]> {
 }
 
 // 获取聚合内容数据
-export async function fetchFeedData(): Promise<FeedItem[]> {
+export async function fetchFeedData(params?: {
+  platforms?: string;
+  timeRange?: string;
+  page?: number;
+  pageSize?: number;
+}): Promise<FeedItem[]> {
   try {
-    const response = await fetch('/data/feed-data.json');
+    const queryParams = new URLSearchParams();
+    if (params?.platforms) queryParams.append('platforms', params.platforms);
+    if (params?.timeRange) queryParams.append('timeRange', params.timeRange);
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.pageSize) queryParams.append('pageSize', params.pageSize.toString());
+
+    const response = await fetch(`${API_BASE_URL}/feed?${queryParams.toString()}`);
     if (!response.ok) {
       throw new Error('获取Feed数据失败');
     }
@@ -31,74 +50,76 @@ export async function fetchFeedData(): Promise<FeedItem[]> {
 // 获取关注用户列表
 export async function fetchFollowedUsers(): Promise<FollowedUser[]> {
   try {
-    const response = await fetch('/data/followed-users.json');
+    const response = await fetch(`${API_BASE_URL}/followed-users`);
     if (!response.ok) {
       throw new Error('获取关注用户数据失败');
     }
-    return await response.json();
+    const userDatas = await response.json();
+    console.log(userDatas);
+    const newUserDatas = userDatas.map((user: FollowedUser) => ({
+      ...user,
+      name: user.name || DEFAULT_NAME,
+      username: user.username || DEFAULT_USERNAME,
+      avatar: user.avatar || DEFAULT_AVATAR,
+      description: user.description || DEFAULT_DESCRIPTION,
+    }));
+    console.log(newUserDatas);
+    return newUserDatas;
   } catch (error) {
     console.error('获取关注用户数据时出错:', error);
     return [];
   }
 }
 
-// 模拟添加关注用户
+// 添加关注用户
 export async function addFollowedUser(profileUrl: string): Promise<FollowedUser | null> {
-  // 这里模拟解析用户链接并返回用户信息
-  // 在实际应用中，这会调用后端API进行解析
-  
-  console.log('正在解析用户链接:', profileUrl);
-  
-  // 模拟异步操作
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // 简单的URL解析逻辑（实际应用中需要更复杂的解析）
-  let platform = '';
-  let username = '';
-  
-  if (profileUrl.includes('zhihu.com')) {
-    platform = 'zhihu';
-    username = profileUrl.split('/').pop() || 'unknown';
-  } else if (profileUrl.includes('xiaohongshu.com')) {
-    platform = 'xiaohongshu';
-    username = profileUrl.split('/').pop() || 'unknown';
-  } else if (profileUrl.includes('bilibili.com')) {
-    platform = 'bilibili';
-    username = profileUrl.split('/').pop() || 'unknown';
-  } else if (profileUrl.includes('twitter.com')) {
-    platform = 'twitter';
-    username = profileUrl.split('/').pop() || 'unknown';
-  } else if (profileUrl.includes('youtube.com')) {
-    platform = 'youtube';
-    username = profileUrl.split('@')[1] || profileUrl.split('/').pop() || 'unknown';
-  } else {
-    throw new Error('不支持的平台链接');
+  try {
+    const response = await fetch(`${API_BASE_URL}/followed-users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ profileUrl }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || '添加关注用户失败');
+    }
+
+    const userData = await response.json();
+    
+    // 检查并填充默认值
+    return {
+      ...userData,
+      name: userData.name || DEFAULT_NAME,
+      username: userData.username || DEFAULT_USERNAME,
+      avatar: userData.avatar || DEFAULT_AVATAR,
+      description: userData.description || DEFAULT_DESCRIPTION,
+    };
+  } catch (error) {
+    console.error('添加关注用户时出错:', error);
+    throw error;
   }
-  
-  // 模拟返回新用户数据
-  const newUser: FollowedUser = {
-    id: Date.now().toString(),
-    platform,
-    username,
-    name: `新用户_${username}`,
-    avatar: '/images/avatar-placeholder.jpg',
-    description: '通过链接添加的新用户',
-    profileUrl,
-    followedAt: new Date().toISOString(),
-    isActive: true
-  };
-  
-  return newUser;
 }
 
-// 模拟取消关注用户
+// 取消关注用户
 export async function unfollowUser(userId: string): Promise<boolean> {
-  console.log('取消关注用户:', userId);
-  
-  // 模拟异步操作
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  return true;
+  try {
+    const response = await fetch(`${API_BASE_URL}/followed-users/${userId}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || '取消关注用户失败');
+    }
+
+    return true;
+  } catch (error) {
+    console.error('取消关注用户时出错:', error);
+    throw error;
+  }
 }
 
 // 格式化时间显示

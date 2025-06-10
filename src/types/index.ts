@@ -2,6 +2,7 @@
 export interface Platform {
   id: string;
   name: string;
+  type: string;
   icon: string;
   color: string;
   backgroundColor: string;
@@ -15,25 +16,15 @@ export interface Author {
   username: string;
 }
 
-// 内容统计信息
-export interface ContentStats {
-  likes: number;
-  comments: number;
-  shares: number;
-}
-
 // 聚合内容类型
 export interface FeedItem {
   id: string;
+  title: string;
   platform: string;
   author: Author;
   content: string;
-  summary: string;
-  timestamp: string;
   originalUrl: string;
-  type: 'article' | 'video' | 'tweet' | 'lifestyle';
-  tags: string[];
-  stats: ContentStats;
+  postedAt: string;
 }
 
 // 关注用户类型
@@ -46,21 +37,10 @@ export interface FollowedUser {
   description: string;
   profileUrl: string;
   followedAt: string;
-  isActive: boolean;
 }
 
 // 筛选选项类型
 export interface FilterOptions {
   platforms: string[];
-  contentTypes: string[];
   timeRange: 'all' | 'today' | 'week' | 'month';
-  sortBy: 'newest' | 'popular' | 'engagement';
-}
-
-// 搜索选项类型
-export interface SearchOptions {
-  query: string;
-  inContent: boolean;
-  inAuthor: boolean;
-  inTags: boolean;
 }

@@ -20,8 +20,8 @@ export function FeedList({
   error, 
   onRefresh 
 }: FeedListProps) {
-  const getPlatformInfo = (platformId: string): Platform | undefined => {
-    return platforms.find(p => p.id === platformId);
+  const getPlatformInfo = (platform: string): Platform | undefined => {
+    return platforms.find(p => p.type === platform);
   };
 
   // 错误状态
