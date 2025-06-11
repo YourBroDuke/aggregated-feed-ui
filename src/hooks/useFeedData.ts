@@ -83,11 +83,6 @@ export function useFeedData() {
     return items;
   }, [feedItems, filters]);
 
-  // 获取平台信息的辅助函数
-  const getPlatformInfo = (platformId: string): Platform | undefined => {
-    return platforms.find(p => p.id === platformId);
-  };
-
   // 添加关注用户
   const addFollowedUser = (user: FollowedUser) => {
     setFollowedUsers(prev => [...prev, user]);
@@ -125,7 +120,6 @@ export function useFeedData() {
     
     // 操作函数
     refreshData,
-    getPlatformInfo,
     addFollowedUser,
     removeFollowedUser,
     updateFilters,

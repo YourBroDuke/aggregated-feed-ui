@@ -88,10 +88,6 @@ export function AddUserModal({
     }
   };
 
-  const getPlatformInfo = (platformId: string): Platform | undefined => {
-    return platforms.find(p => p.id === platformId);
-  };
-
   const groupedUsers = platforms.map(platform => ({
     platform,
     users: followedUsers.filter(user => user.platform === platform.type)
@@ -195,7 +191,7 @@ export function AddUserModal({
             ) : (
               <div className="space-y-4">
                 {groupedUsers.map(({ platform, users }) => (
-                  <div key={platform.id}>
+                  <div key={platform.type}>
                     <div className="flex items-center space-x-2 mb-3">
                       <img 
                         src={platform.icon} 
@@ -226,9 +222,6 @@ export function AddUserModal({
                                   </div>
                                   <p className="text-sm text-gray-500 truncate">
                                     @{user.username}
-                                  </p>
-                                  <p className="text-xs text-gray-400 truncate">
-                                    {user.description}
                                   </p>
                                 </div>
                               </div>

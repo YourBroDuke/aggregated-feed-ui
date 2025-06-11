@@ -1,6 +1,5 @@
 // 平台类型定义
 export interface Platform {
-  id: string;
   name: string;
   type: string;
   icon: string;
@@ -34,7 +33,6 @@ export interface FollowedUser {
   username: string;
   name: string;
   avatar: string;
-  description: string;
   profileUrl: string;
   followedAt: string;
 }

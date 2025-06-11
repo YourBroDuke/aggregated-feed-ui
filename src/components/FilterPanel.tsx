@@ -96,12 +96,12 @@ export function FilterPanel({
             <h3 className="font-medium text-gray-900 mb-3">平台筛选</h3>
             <div className="space-y-3">
               {platforms.map((platform) => (
-                <div key={platform.id} className="flex items-center space-x-3">
+                <div key={platform.type} className="flex items-center space-x-3">
                   <Checkbox
-                    id={`platform-${platform.id}`}
-                    checked={filters.platforms.includes(platform.id)}
+                    id={`platform-${platform.type}`}
+                    checked={filters.platforms.includes(platform.type)}
                     onCheckedChange={(checked) => 
-                      handlePlatformChange(platform.id, !!checked)
+                      handlePlatformChange(platform.type, !!checked)
                     }
                   />
                   <div className="flex items-center space-x-2 flex-1">
@@ -111,7 +111,7 @@ export function FilterPanel({
                       className="w-5 h-5 object-contain"
                     />
                     <Label 
-                      htmlFor={`platform-${platform.id}`}
+                      htmlFor={`platform-${platform.type}`}
                       className="text-sm font-medium cursor-pointer"
                     >
                       {platform.name}
@@ -154,7 +154,6 @@ export function FilterPanel({
         <div className="mt-6 pt-6 border-t border-gray-200">
           <div className="flex space-x-3">
             <Button 
-              onClick={onClose} 
               className="flex-1"
             >
               应用筛选

@@ -61,7 +61,6 @@ export async function fetchFollowedUsers(): Promise<FollowedUser[]> {
       name: user.name || DEFAULT_NAME,
       username: user.username || DEFAULT_USERNAME,
       avatar: user.avatar || DEFAULT_AVATAR,
-      description: user.description || DEFAULT_DESCRIPTION,
     }));
     console.log(newUserDatas);
     return newUserDatas;
